@@ -115,7 +115,7 @@ const fetchPrices = async () => {
     .then(response => {
       response.forEach(resp => {
         // console.log(resp.data.symbol, resp.data.priceChangePercent);
-        if (resp.data.priceChangePercent > 4) {
+        if (resp.data.priceChangePercent > 5) {
           bot.sendMessage(
             "-576436107",
             `${resp.data.symbol}: change: %${
@@ -131,6 +131,7 @@ const fetchPrices = async () => {
 };
 
 (async () => {
+  console.log("started");
   while (true) {
     await fetchPrices();
     await wait(15000);
