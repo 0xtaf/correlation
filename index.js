@@ -14,7 +14,7 @@ function wait(delay) {
   });
 }
 
-let url = "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbols=%5B";
+let url = "https://api.binance.com/api/v3/ticker?&windowSize=1m&symbols=%5B";
 
 tokens.forEach((token, index) => {
   if (index == 0) {
@@ -29,7 +29,7 @@ url = url + "%5D";
 let result = "";
 const fetchAll = () => {
   axios.get(url).then(response => {
-    const data = response.data.filter(data => data.priceChangePercent > 0.4);
+    const data = response.data.filter(data => data.priceChangePercent > 2.9);
 
     data.forEach(data => {
       result =
@@ -53,7 +53,7 @@ Korele pairler: ${correlatedPairs[`${data.symbol}`]}
   while (true) {
     try {
       fetchAll();
-      await wait(15000);
+      await wait(11000);
     } catch (error) {
       console.log(error);
     }
