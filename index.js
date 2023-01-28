@@ -13,6 +13,39 @@ function wait(delay) {
   });
 }
 
+const tokens = [
+  "HOOKUSDT",
+  "MAGICUSDT",
+  "HFTUSDT",
+  "SANTOSUSDT",
+  "LAZIOUSDT",
+  "PORTOUSDT",
+  "ALPINEUSDT",
+  "ATMUSDT",
+  "ASRUSDT",
+  "ACMUSDT",
+  "JUVUSDT",
+  "BARUSDT",
+  "CITYUSDT",
+  "PSGUSDT",
+  "OGUSDT",
+  "AGIXBUSD",
+  "FETBUSD",
+  "CTXCBUSD",
+  "VOXELUSDT",
+  "LOKAUSDT",
+  "BONDUSDT",
+  "WINGUSDT",
+  "SNMBUSD",
+  "VIBBUSD",
+  "SUNUSDT",
+  "JSTUSDT",
+  "TLMUSDT",
+  "TVKUSDT",
+  "AXSUSDT",
+  "SLPUSDT",
+];
+
 const correlatedPairs = {
   HOOKUSDT: "MAGICUSDT, HFTUSDT",
   MAGICUSDT: "HOOKUSDT, HFTUSDT",
@@ -47,97 +80,41 @@ const correlatedPairs = {
   AVAXUSDT: "JOEUSDT",
 };
 
-const urls = [
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=HOOKUSDT",
-  "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbol=MAGICUSDT",
-  "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbol=HFTUSDT",
-  "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbol=SANTOSUSDT",
-  "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbol=LAZIOUSDT",
-  "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbol=PORTOUSDT",
-  "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbol=ALPINEUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=ATMUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=ASRUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=ACMUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=JUVUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=BARUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=CITYUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=PSGUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=OGUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=AGIXBUSD",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=FETBUSD",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=CTXCBUSD",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=VOXELUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=LOKAUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=BONDUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=WINGUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=SNMBUSD",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=VIBBUSD",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=SUNUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=JSTUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=TLMUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=TVKUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=AXSUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=SLPUSDT",
-  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=AVAXUSDT",
-];
+let url = "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbols=%5B";
 
-const fetchPrices = async () => {
-  await Promise.all([
-    axios.get(urls[0]),
-    axios.get(urls[1]),
-    axios.get(urls[2]),
-    axios.get(urls[3]),
-    axios.get(urls[4]),
-    axios.get(urls[5]),
-    axios.get(urls[6]),
-    axios.get(urls[7]),
-    axios.get(urls[8]),
-    axios.get(urls[9]),
-    axios.get(urls[10]),
-    axios.get(urls[11]),
-    axios.get(urls[12]),
-    axios.get(urls[13]),
-    axios.get(urls[14]),
-    axios.get(urls[15]),
-    axios.get(urls[16]),
-    axios.get(urls[17]),
-    axios.get(urls[18]),
-    axios.get(urls[19]),
-    axios.get(urls[20]),
-    axios.get(urls[21]),
-    axios.get(urls[22]),
-    axios.get(urls[23]),
-    axios.get(urls[24]),
-    axios.get(urls[25]),
-    axios.get(urls[26]),
-    axios.get(urls[27]),
-    axios.get(urls[28]),
-    axios.get(urls[29]),
-    axios.get(urls[30]),
-  ])
-    .then(response => {
-      response.forEach(resp => {
-        // console.log(resp.data.symbol, resp.data.priceChangePercent);
-        if (resp.data.priceChangePercent > 4) {
-          bot.sendMessage(
-            "-576436107",
-            `${resp.data.symbol}: change: %${
-              resp.data.priceChangePercent
-            } korele pairleri: ${correlatedPairs[`${resp.data.symbol}`]}`
-          );
-        }
-      });
-    })
-    .catch(error => {
-      console.log(error);
+tokens.forEach((token, index) => {
+  if (index == 0) {
+    url = url + "%22" + token + "%22";
+  } else {
+    url = url + ",%22" + token + "%22";
+  }
+});
+
+url = url + "%5D";
+
+const fetchAll = () => {
+  axios.get(url).then(response => {
+    const data = response.data.filter(data => data.priceChangePercent > 4);
+
+    const beautified = data.map(data => {
+      return {
+        symbol: data.symbol,
+        change: data.priceChangePercent,
+        korelesi: correlatedPairs[`${data.symbol}`],
+      };
     });
+
+    if (beautified.length) {
+      bot.sendMessage("-576436107", `test: ${JSON.stringify(beautified)}`);
+    }
+  });
 };
 
 (async () => {
   console.log("started");
   while (true) {
     try {
-      await fetchPrices();
+      fetchAll();
       await wait(15000);
     } catch (error) {
       console.log(error);
