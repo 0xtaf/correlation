@@ -44,6 +44,7 @@ const correlatedPairs = {
   TVKUSDT: "TLMUSDT",
   AXSUSDT: "SLPUSDT",
   SLPUSDT: "AXSUSDT",
+  AVAXUSDT: "JOEUSDT",
 };
 
 const urls = [
@@ -77,6 +78,7 @@ const urls = [
   "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=TVKUSDT",
   "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=AXSUSDT",
   "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=SLPUSDT",
+  "https://api.binance.com/api/v3/ticker?windowSize=5m&symbol=AVAXUSDT",
 ];
 
 const fetchPrices = async () => {
@@ -111,11 +113,12 @@ const fetchPrices = async () => {
     axios.get(urls[27]),
     axios.get(urls[28]),
     axios.get(urls[29]),
+    axios.get(urls[30]),
   ])
     .then(response => {
       response.forEach(resp => {
         // console.log(resp.data.symbol, resp.data.priceChangePercent);
-        if (resp.data.priceChangePercent > 5) {
+        if (resp.data.priceChangePercent > 4) {
           bot.sendMessage(
             "-576436107",
             `${resp.data.symbol}: change: %${
@@ -133,7 +136,11 @@ const fetchPrices = async () => {
 (async () => {
   console.log("started");
   while (true) {
-    await fetchPrices();
-    await wait(15000);
+    try {
+      await fetchPrices();
+      await wait(15000);
+    } catch (error) {
+      console.log(error);
+    }
   }
 })();
