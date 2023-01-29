@@ -28,24 +28,29 @@ url = url + "%5D";
 
 let result = "";
 const fetchAll = () => {
-  axios.get(url).then(response => {
-    const data = response.data.filter(data => data.priceChangePercent > 2.9);
+  axios
+    .get(url)
+    .then(response => {
+      const data = response.data.filter(data => data.priceChangePercent > 2.9);
 
-    data.forEach(data => {
-      result =
-        result +
-        `
+      data.forEach(data => {
+        result =
+          result +
+          `
 ${data.symbol}
 Artis: %${Number(data.priceChangePercent).toFixed(1)}
 Korele pairler: ${correlatedPairs[`${data.symbol}`]}
 
 `;
-    });
+      });
 
-    if (data.length) {
-      bot.sendMessage("-576436107", result);
-    }
-  });
+      if (data.length) {
+        bot.sendMessage("-576436107", result);
+      }
+    })
+    .catch(error => {
+      bot.sendMessage("-576436107", "error");
+    });
 };
 
 (async () => {
@@ -55,7 +60,7 @@ Korele pairler: ${correlatedPairs[`${data.symbol}`]}
       fetchAll();
       await wait(11000);
     } catch (error) {
-      console.log(error);
+      bot.sendMessage("-576436107", "error inside");
     }
   }
 })();
