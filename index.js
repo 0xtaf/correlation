@@ -26,25 +26,32 @@ tokens.forEach((token, index) => {
 
 url = url + "%5D";
 
-let result = "";
+const emittedPairs = new Map();
+
 const fetchAll = () => {
   axios
     .get(url)
     .then(response => {
       const data = response.data.filter(data => data.priceChangePercent > 2.9);
 
-      data.forEach(data => {
-        result =
-          result +
-          `
+      if (data.length) {
+        let result = "";
+
+        data.forEach(data => {
+          if (!emittedPairs.has(data.symbol)) {
+            emittedPairs.set(data.symbol, Date.now());
+
+            result =
+              result +
+              `
 ${data.symbol}
 Artis: %${Number(data.priceChangePercent).toFixed(1)}
 Korele pairler: ${correlatedPairs[`${data.symbol}`]}
 
 `;
-      });
+          }
+        });
 
-      if (data.length) {
         bot.sendMessage("-576436107", result);
       }
     })
@@ -53,12 +60,23 @@ Korele pairler: ${correlatedPairs[`${data.symbol}`]}
     });
 };
 
+const clearPairs = () => {
+  const currentTime = Date.now();
+
+  emittedPairs.forEach((value, key) => {
+    if (currentTime - value > 20000) {
+      emittedPairs.delete(key);
+    }
+  });
+};
+
 (async () => {
   console.log("started");
   while (true) {
     try {
       fetchAll();
       await wait(11000);
+      clearPairs();
     } catch (error) {
       bot.sendMessage("-576436107", "error inside");
     }
