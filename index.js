@@ -64,7 +64,7 @@ const clearPairs = () => {
   const currentTime = Date.now();
 
   emittedPairs.forEach((value, key) => {
-    if (currentTime - value > 20000) {
+    if (currentTime - value > 3600000) {
       emittedPairs.delete(key);
     }
   });
