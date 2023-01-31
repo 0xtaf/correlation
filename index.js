@@ -32,7 +32,7 @@ const fetchAll = () => {
   axios
     .get(url)
     .then(response => {
-      const data = response.data.filter(data => data.priceChangePercent > 2.9);
+      const data = response.data.filter(data => data.priceChangePercent >= 2);
 
       if (data.length) {
         let result = "";
