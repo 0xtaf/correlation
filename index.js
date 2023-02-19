@@ -15,49 +15,90 @@ function wait(delay) {
 }
 
 let url = "https://api.binance.com/api/v3/ticker?&windowSize=1m&symbols=%5B";
+let url5m = "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbols=%5B";
 
 tokens.forEach((token, index) => {
   if (index == 0) {
     url = url + "%22" + token + "%22";
+    url5m = url5m + "%22" + token + "%22";
   } else {
     url = url + ",%22" + token + "%22";
+    url5m = url5m + ",%22" + token + "%22";
   }
 });
 
 url = url + "%5D";
+url5m = url5m + "%5D";
 
 const emittedPairs = new Map();
+const emittedPairs5m = new Map();
 
-const fetchAll = () => {
-  axios
-    .get(url)
-    .then(response => {
-      const data = response.data.filter(data => data.priceChangePercent >= 2);
+const fetchAll = async () => {
+  const response = await axios.get(url);
 
-      if (data.length) {
-        let result = "";
+  const data = response.data.filter(data => data.priceChangePercent >= 2);
 
-        data.forEach(data => {
-          if (!emittedPairs.has(data.symbol)) {
-            emittedPairs.set(data.symbol, Date.now());
+  if (data.length) {
+    let result = "";
+
+    data.forEach(data => {
+      if (!emittedPairs.has(data.symbol)) {
+        emittedPairs.set(data.symbol, Date.now());
+
+        result =
+          result +
+          `
+${data.symbol}
+Tek Mum Artis: %${Number(data.priceChangePercent).toFixed(1)}
+Korele pairler: ${correlatedPairs[`${data.symbol}`]}
+
+`;
+      }
+    });
+
+    bot.sendMessage("-576436107", result);
+  }
+};
+
+const fetchSome = async () => {
+  const response = await axios.get(url5m);
+
+  const allData = response.data.filter(data => data.priceChangePercent >= 5);
+
+  if (allData.length) {
+    let result = "";
+
+    for (const data of allData) {
+      const cPairs = correlatedPairs[data.symbol].split(" ");
+
+      for (const pair of cPairs) {
+        const url = `https://api.binance.com/api/v3/ticker?&windowSize=5m&symbol=${pair}`;
+
+        const response = await axios.get(url);
+
+        if (response.data.priceChangePercent < 1) {
+          if (!emittedPairs5m.has(pair)) {
+            emittedPairs5m.set(pair, Date.now());
 
             result =
               result +
               `
-${data.symbol}
-Artis: %${Number(data.priceChangePercent).toFixed(1)}
-Korele pairler: ${correlatedPairs[`${data.symbol}`]}
+      ${data.symbol}
+      5 Dk Artis: %${Number(data.priceChangePercent).toFixed(1)}
+      Hala yukselmeyen korele pair: ${pair} %${Number(
+                response.data.priceChangePercent
+              ).toFixed(1)} artis
 
-`;
+      `;
           }
-        });
-
-        bot.sendMessage("-576436107", result);
+        }
       }
-    })
-    .catch(error => {
-      bot.sendMessage("-576436107", "error");
-    });
+    }
+
+    if (result != "") {
+      bot.sendMessage("-576436107", result);
+    }
+  }
 };
 
 const clearPairs = () => {
@@ -68,13 +109,21 @@ const clearPairs = () => {
       emittedPairs.delete(key);
     }
   });
+
+  emittedPairs5m.forEach((value, key) => {
+    if (currentTime - value > 900000) {
+      emittedPairs5m.delete(key);
+    }
+  });
 };
 
 (async () => {
   console.log("started");
   while (true) {
     try {
-      fetchAll();
+      await fetchAll();
+      await wait(5000);
+      await fetchSome();
       await wait(11000);
       clearPairs();
     } catch (error) {
