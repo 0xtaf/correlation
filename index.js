@@ -87,7 +87,10 @@ const fetchSome = async () => {
       5 Dk Artis: %${Number(data.priceChangePercent).toFixed(1)}
       Hala yukselmeyen korele pair: ${pair} %${Number(
                 response.data.priceChangePercent
-              ).toFixed(1)} artis
+              ).toFixed(1)} artis, Fiyat: ${response.data.lastPrice.replace(
+                /(\.\d*?[1-9])0+$/g,
+                "$1"
+              )}
 
       `;
           }
