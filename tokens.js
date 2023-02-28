@@ -44,6 +44,8 @@ const tokens = [
   "DEGOBUSD",
   "ERNBUSD",
   "HIGHBUSD",
+  "RAYBUSD",
+  "SRMBUSD",
 ];
 
 const correlatedPairs = {
@@ -92,6 +94,8 @@ const correlatedPairs = {
   DEGOBUSD: "ERNBUSD HIGHBUSD",
   ERNBUSD: "DEGOBUSD HIGHBUSD",
   HIGHBUSD: "DEGOBUSD ERNBUSD",
+  RAYBUSD: "SRMBUSD",
+  SRMBUSD: "RAYBUSD",
 };
 
 module.exports = { tokens, correlatedPairs };
