@@ -14,7 +14,7 @@ function wait(delay) {
   });
 }
 
-let url = "https://api.binance.com/api/v3/ticker?&windowSize=1m&symbols=%5B";
+let url = "https://api.binance.com/api/v3/ticker?&windowSize=3m&symbols=%5B";
 let url5m = "https://api.binance.com/api/v3/ticker?&windowSize=5m&symbols=%5B";
 
 tokens.forEach((token, index) => {
@@ -49,7 +49,7 @@ const fetchAll = async () => {
           result +
           `
 ${data.symbol}
-Tek Mum Artis: %${Number(data.priceChangePercent).toFixed(1)}
+Artis: %${Number(data.priceChangePercent).toFixed(1)}
 Korele pairler: ${correlatedPairs[`${data.symbol}`]}
 
 `;
@@ -83,14 +83,11 @@ const fetchSome = async () => {
             result =
               result +
               `
-      ${data.symbol}
-      5 Dk Artis: %${Number(data.priceChangePercent).toFixed(1)}
-      Korelesi: ${pair} %${Number(response.data.priceChangePercent).toFixed(
+  ${data.symbol}
+  5 Dk Artis: %${Number(data.priceChangePercent).toFixed(1)}
+  Korelesi: ${pair} %${Number(response.data.priceChangePercent).toFixed(
                 1
-              )} artis, Fiyat: ${response.data.lastPrice.replace(
-                /(\.\d*?[1-9])0+$/g,
-                "$1"
-              )}
+              )}, Fiyat: ${response.data.lastPrice.replace(/(\.\d*?[1-9])0+$/g, "$1")}
 
       `;
           }
