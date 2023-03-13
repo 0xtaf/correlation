@@ -64,6 +64,8 @@ const tokens = [
   "XLMBUSD",
   "WINBUSD",
   "DENTBUSD",
+  "CFXUSDT",
+  "ACHUSDT",
 ];
 
 const correlatedPairs = {
@@ -132,6 +134,8 @@ const correlatedPairs = {
   XLMBUSD: "XRPBUSD",
   WINBUSD: "DENTBUSD",
   DENTBUSD: "WINBUSD",
+  ACHUSDT: "CFXUSDT",
+  CFXUSDT: "ACHUSDT",
 };
 
 module.exports = { tokens, correlatedPairs };
