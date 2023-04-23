@@ -41,29 +41,33 @@ const fetchAll = async () => {
   if (data.length) {
     let result = "";
 
-    for (const data of allData) {
-      const cPairs = correlatedPairs[data.symbol].split(" ");
+    await Promise.all(
+      data.map(async data => {
+        const cPairs = correlatedPairs[data.symbol].split(" ");
 
-      for (const pair of cPairs) {
-        const url = `https://api.binance.com/api/v3/ticker?&windowSize=3m&symbol=${pair}`;
-        const response = await axios.get(url);
+        await Promise.all(
+          cPairs.map(async pair => {
+            const url = `https://api.binance.com/api/v3/ticker?&windowSize=3m&symbol=${pair}`;
+            const response = await axios.get(url);
 
-        if (response.data.priceChangePercent < 0.6) {
-          if (!emittedPairs.has(data.symbol)) {
-            emittedPairs.set(data.symbol, Date.now());
+            if (response.data.priceChangePercent < 0.4) {
+              if (!emittedPairs.has(data.symbol)) {
+                emittedPairs.set(data.symbol, Date.now());
 
-            result =
-              result +
-              `
+                result =
+                  result +
+                  `
 ${data.symbol}
 Artis: %${Number(data.priceChangePercent).toFixed(1)}
-Korele pairler: ${correlatedPairs[`${data.symbol}`]}
+Korelesi: ${pair} %${Number(response.data.priceChangePercent).toFixed(1)}
 
 `;
-          }
-        }
-      }
-    }
+              }
+            }
+          })
+        );
+      })
+    );
 
     bot.sendMessage("-576436107", result);
   }
@@ -136,6 +140,7 @@ const clearPairs = () => {
       await wait(11000);
       clearPairs();
     } catch (error) {
+      console.log("errorrr", error);
       bot.sendMessage("-576436107", "error inside");
     }
   }
