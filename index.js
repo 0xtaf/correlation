@@ -41,20 +41,29 @@ const fetchAll = async () => {
   if (data.length) {
     let result = "";
 
-    data.forEach(data => {
-      if (!emittedPairs.has(data.symbol)) {
-        emittedPairs.set(data.symbol, Date.now());
+    for (const data of allData) {
+      const cPairs = correlatedPairs[data.symbol].split(" ");
 
-        result =
-          result +
-          `
+      for (const pair of cPairs) {
+        const url = `https://api.binance.com/api/v3/ticker?&windowSize=3m&symbol=${pair}`;
+        const response = await axios.get(url);
+
+        if (response.data.priceChangePercent < 0.6) {
+          if (!emittedPairs.has(data.symbol)) {
+            emittedPairs.set(data.symbol, Date.now());
+
+            result =
+              result +
+              `
 ${data.symbol}
 Artis: %${Number(data.priceChangePercent).toFixed(1)}
 Korele pairler: ${correlatedPairs[`${data.symbol}`]}
 
 `;
+          }
+        }
       }
-    });
+    }
 
     bot.sendMessage("-576436107", result);
   }
