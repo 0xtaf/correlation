@@ -50,6 +50,11 @@ const tokens = [
   "RAYUSDT",
   "UMAUSDT",
   "RADUSDT",
+  "JSTUSDT",
+  "SUNUSDT",
+  "DREPUSDT",
+  "PHBUSDT",
+  "AMBUSDT",
 ];
 
 const correlatedPairs = {
@@ -77,8 +82,9 @@ const correlatedPairs = {
   LUNABUSD: "LUNCBUSD USTCBUSD",
   LUNCBUSD: "LUNABUSD USTCBUSD",
   USTCBUSD: "LUNCBUSD LUNABUSD",
-  PERLUSDT: "PNTUSDT",
+  PERLUSDT: "PNTUSDT DREPUSDT",
   PNTUSDT: "PERLUSDT",
+  DREPUSDT: "PERLUSDT",
   CVPBUSD: "DFBUSD",
   DFBUSD: "CVPBUSD",
   COCOSBUSD: "COSBUSD",
@@ -104,6 +110,10 @@ const correlatedPairs = {
   RAYUSDT: "FIDAUSDT",
   UMAUSDT: "RADUSDT",
   RADUSDT: "UMAUSDT",
+  JSTUSDT: "SUNUSDT",
+  SUNUSDT: "JSTUSDT",
+  PHBUSDT: "AMBUSDT",
+  AMBUSDT: "PHBUSDT",
 };
 
 module.exports = { tokens, correlatedPairs };
